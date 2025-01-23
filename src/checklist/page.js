@@ -9,32 +9,6 @@ const CheckListPage = () => {
   const [payloadItemChecklist, setPayloadItemChecklist] = useState("");
   const [data, setData] = useState([]);
   const token = localStorage.getItem("authToken");
-  const todoCards = [
-    {
-      title: "Personal To-Do",
-      todos: [
-        { id: 1, text: "Buy groceries" },
-        { id: 2, text: "Walk the dog" },
-        { id: 3, text: "Read a book" },
-      ],
-    },
-    {
-      title: "Work To-Do",
-      todos: [
-        { id: 4, text: "Finish project" },
-        { id: 5, text: "Email the team" },
-        { id: 6, text: "Prepare for meeting" },
-      ],
-    },
-    {
-      title: "Shopping To-Do",
-      todos: [
-        { id: 7, text: "Buy new shoes" },
-        { id: 8, text: "Get a new phone case" },
-        { id: 9, text: "Check out new laptop" },
-      ],
-    },
-  ];
 
   const handleCreateChecklist = async (e) => {
     e.preventDefault();
@@ -49,6 +23,8 @@ const CheckListPage = () => {
           },
         }
       );
+      setPayloadChecklist("");
+      getChecklist();
       console.log(response);
     } catch (error) {}
   };
@@ -66,6 +42,8 @@ const CheckListPage = () => {
           },
         }
       );
+      setPayloadItemChecklist("");
+      getChecklist();
       console.log(response);
     } catch (error) {}
   };
@@ -90,12 +68,12 @@ const CheckListPage = () => {
   }, []);
   return (
     <Container className="mt-5">
-      <Col>
+      <Row>
         <Col md={6} sm={12}>
           <h2 className="text-center">Create Checklist</h2>
           <Form onSubmit={handleCreateChecklist}>
             <Form.Group controlId="formBasicName">
-              <Form.Label>Name</Form.Label>
+              <Form.Label className="mt-3">Name</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Name"
@@ -105,7 +83,7 @@ const CheckListPage = () => {
               />
             </Form.Group>
 
-            <Button variant="primary" type="submit" className="w-100">
+            <Button variant="primary" type="submit" className="w-100 mt-3">
               Create
             </Button>
           </Form>
@@ -114,7 +92,7 @@ const CheckListPage = () => {
           <h2 className="text-center">Create Item Checklist</h2>
           <Form onSubmit={handleCreateItemChecklist}>
             <Form.Group controlId="checklistSelect">
-              <Form.Label>Checklist</Form.Label>
+              <Form.Label className="mt-3">Checklist</Form.Label>
               <Form.Control
                 as="select"
                 value={id}
@@ -146,15 +124,15 @@ const CheckListPage = () => {
             </Button>
           </Form>
         </Col>
-        <Row>
-          {data.length > 0 &&
-            data.map((item, index) => (
-              <Col key={index} md={4} className="mb-3">
-                <TodoCard title={item.name} todos={item.items} />
-              </Col>
-            ))}
-        </Row>
-      </Col>
+      </Row>
+      <Row className="mt-5">
+        {data.length > 0 &&
+          data.map((item, index) => (
+            <Col key={index} md={4} className="mb-3">
+              <TodoCard title={item.name} checklistId={item.id} checklists={item.items ?? []} func={getChecklist} />
+            </Col>
+          ))}
+      </Row>
     </Container>
   );
 };

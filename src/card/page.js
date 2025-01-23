@@ -1,44 +1,37 @@
-import React, { useState } from 'react';
-import { Card, ListGroup, ListGroupItem, Form } from 'react-bootstrap';
+import axios from "axios";
+import React from "react";
+import { Card, ListGroup, ListGroupItem, Form } from "react-bootstrap";
 
-// Fungsi untuk menghasilkan warna acak
-const getRandomColor = () => {
-  const letters = '0123456789ABCDEF';
-  let color = '#';
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-};
-
-const TodoCard = ({ title, todos }) => {
-  // State untuk menyimpan status checklist tiap item
-  const [checkedItems, setCheckedItems] = useState(
-    todos.reduce((acc, todo) => {
-      acc[todo.id] = false;
-      return acc;
-    }, {})
-  );
-
-  // Fungsi untuk menangani perubahan status checklist
-  const handleCheckboxChange = (id) => {
-    setCheckedItems((prevCheckedItems) => ({
-      ...prevCheckedItems,
-      [id]: !prevCheckedItems[id],
-    }));
+const TodoCard = ({ title, checklistId, checklists, func }) => {
+  const token = localStorage.getItem("authToken");
+  const handleCheckboxChange = async (itemId) => {
+    try {
+      const response = await axios.put(
+        `http://94.74.86.174:8080/api/checklist/${checklistId}/item/${itemId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      func()
+      console.log(response);
+    } catch (error) {}
   };
 
   return (
-    <Card style={{ backgroundColor: getRandomColor() }} className="mb-3">
+    <Card style={{ backgroundColor: "aliceblue" }} className="mb-3">
       <Card.Body>
         <Card.Title>{title}</Card.Title>
         <ListGroup>
-          {todos.map((todo) => (
+          {checklists.map((todo) => (
             <ListGroupItem key={todo.id}>
               <Form.Check
                 type="checkbox"
                 label={todo.name}
-                checked={checkedItems[todo.id]}
+                checked={todo.itemCompletionStatus}
                 onChange={() => handleCheckboxChange(todo.id)}
               />
             </ListGroupItem>

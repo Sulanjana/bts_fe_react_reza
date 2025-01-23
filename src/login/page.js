@@ -1,9 +1,10 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Button, Form, Container, Row, Col } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
+    const navigate = useNavigate();
   const [payload, setPayload] = useState({
     username: "",
     password: "",
@@ -16,6 +17,7 @@ const LoginPage = () => {
         "http://94.74.86.174:8080/api/login",
         payload
       );
+      navigate("/checklist")
       localStorage.setItem("authToken", response.data.data.token);
     } catch (error) {}
   };
